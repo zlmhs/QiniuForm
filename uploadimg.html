@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>七牛直传图片测试</title>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.form.js"></script>
+</head>
+<body>
+<form id="myform" method="post" action="http://upload-z1.qiniu.com" enctype="multipart/form-data">
+    <input class="getTime1" name="key" type="hidden" value="">
+    <input name="x:<custom_name>" type="hidden" value="">
+    <input class="tokenUrl1" name="token" type="hidden" value="">
+    <input onclick="fileClickFun(1)" id="upInput1" class="upVideoInput1" style="margin:0;" class="upVideo" name="file" type="file" accept="image/*" value=""/>
+    <input name="accept" type="hidden" value="" />
+    <!-- <input  id="submit1" class="submit1"  type="submit" value="上传" > -->
+</form>
+<img style="width:300px;height:300px;" class="upImg" src="" alt="">
+<script type="text/javascript">
+    tokenFun(1);
+    function tokenFun(i){
+        $.ajax({
+            //生成token的url
+            url:'http://ss.classicalmusician.com.cn/zr/web/tWXplayer/getUpload_Token.do',
+            type:'POST',
+            success:function(data){
+                if (data.code == 0) {
+                    console.log(data);
+                    $('.tokenUrl'+i).val(data.data.upload_token);
+                }
+            }
+        })
+    }
+    function fileClickFun(i){
+        var date =new Date().getTime();
+        $('.getTime'+i).val(date);
+        $(".upVideoInput1").change(function(){
+            var formData = new FormData($( "#myform" )[0]);
+            $.ajax({
+                url:"http://upload-z1.qiniu.com",
+                type:"post",
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success:function(data){
+                    $('.upImg').attr('src','http://cdn.yinyuewujie.com/'+data.key);
+                },
+                error:function(e){
+                    alert("错误！！");
+                }
+            });
+        });
+    }
+
+</script>
+
+</body>
+</html>
